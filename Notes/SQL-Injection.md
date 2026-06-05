@@ -18,3 +18,6 @@ SQL Injection is a web security vulnerability that allows an attacker to interfe
 
 ### Lab 01: WHERE Clause SQL Injection
 In this lab, I practiced how SQL injection can modify a WHERE clause and change the query logic to reveal hidden data. The main lesson was that insecure handling of user input can allow unauthorized access to restricted information.
+
+## Lab 02: Login Bypass
+In this lab, I practiced how SQL injection can affect authentication logic. The main lesson was that insecure handling of login input can allow unauthorized access to privileged accounts. This showed why login forms must use parameterized queries and secure authentication checks.
