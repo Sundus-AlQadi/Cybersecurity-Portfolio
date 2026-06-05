@@ -21,3 +21,14 @@ In this lab, I practiced how SQL injection can modify a WHERE clause and change 
 
 ## Lab 02: Login Bypass
 In this lab, I practiced how SQL injection can affect authentication logic. The main lesson was that insecure handling of login input can allow unauthorized access to privileged accounts. This showed why login forms must use parameterized queries and secure authentication checks.
+
+## Lab 03: UNION-Based SQL Injection
+
+UNION-based SQL injection is used when the results of the injected query are returned in the application's response.
+
+The UNION operator combines the results of two SELECT queries. However, both SELECT queries must return the same number of columns.
+
+A column is like a field in a database table. For example, a products table may contain columns such as:
+
+```text
+3 columns
