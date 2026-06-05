@@ -31,4 +31,4 @@ The UNION operator combines the results of two SELECT queries. However, both SEL
 A column is like a field in a database table. For example, a products table may contain columns such as:
 
 ```text
-3 columns
+id | name | price
