@@ -13,3 +13,8 @@ SQL Injection is a web security vulnerability that allows an attacker to interfe
 - SQL Injection happens when user input is inserted into SQL queries without proper validation or parameterization.
 - It can affect confidentiality, integrity, and availability.
 - Secure coding practices are needed to prevent it.
+
+## Lab Practice
+
+### Lab 01: WHERE Clause SQL Injection
+In this lab, I practiced how SQL injection can modify a WHERE clause and change the query logic to reveal hidden data. The main lesson was that insecure handling of user input can allow unauthorized access to restricted information.
