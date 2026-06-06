@@ -63,3 +63,21 @@ For example, instead of displaying username and password in two separate columns
 
 ```text
 username~password
+```
+### Lab 07: Querying the Database Type and Version
+
+SQL injection can be used to gather information about the database system itself. This is known as database enumeration.
+
+Database enumeration may include identifying:
+
+- Database type
+- Database version
+- Table names
+- Column names
+
+This information is useful because SQL syntax can differ between database systems such as MySQL, Microsoft SQL Server, PostgreSQL, and Oracle.
+
+For MySQL and Microsoft SQL Server, the database version can be queried using:
+
+```text
+@@version
