@@ -52,3 +52,14 @@ After that, I retrieved the username and password columns from the users table a
 
 #### Key Takeaway
 UNION-based SQL injection can expose sensitive information from other database tables if user input is not handled securely and query results are displayed in the application's response.
+
+### Lab 06: Retrieving Multiple Values in a Single Column
+
+In UNION-based SQL injection, sometimes the original query returns multiple columns, but only one of them is compatible with string/text data.
+
+When only one text-compatible column is available, multiple values can be combined into one output using string concatenation.
+
+For example, instead of displaying username and password in two separate columns, they can be combined into one value:
+
+```text
+username~password
