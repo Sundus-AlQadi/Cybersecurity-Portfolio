@@ -32,3 +32,12 @@ A column is like a field in a database table. For example, a products table may 
 
 ```text
 id | name | price
+
+## Lab 04: Finding a Text-Compatible Column in UNION-Based SQL Injection
+
+After determining the number of columns returned by the original query, the next step is to identify which column can display string data.
+
+This is important because different database columns may have different data types, such as:
+
+```text
+id | name | price
