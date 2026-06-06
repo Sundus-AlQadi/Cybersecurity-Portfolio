@@ -41,3 +41,14 @@ This is important because different database columns may have different data typ
 
 ```text
 id | name | price
+```
+### Lab 05: Retrieving Data from Other Tables
+
+In this lab, I used the techniques from previous UNION-based SQL injection labs.
+
+First, I confirmed that the original query returned two columns. Then, I confirmed that both columns were compatible with text data.
+
+After that, I retrieved the username and password columns from the users table and used the administrator credentials to complete the lab.
+
+#### Key Takeaway
+UNION-based SQL injection can expose sensitive information from other database tables if user input is not handled securely and query results are displayed in the application's response.
