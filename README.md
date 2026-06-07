@@ -34,16 +34,28 @@ The lab documentation is available under:
 
 `PortSwigger-Labs/`
 
+### SEED Labs
+
+I have also completed selected SEED Labs in controlled academic environments. These labs covered practical cybersecurity topics such as packet sniffing and spoofing, ARP cache poisoning, ICMP redirect attacks, TCP/IP attacks, local DNS attacks, PKI, and TLS.
+
+The SEED Labs documentation is available under:
+
+`SEED-Labs/`
+
 ## Tools Used
 
 - Burp Suite Community Edition
 - PortSwigger Web Security Academy
-- GitHub
-- Python
-- Linux
+- SEED Ubuntu VM
+- Docker / Docker Compose
+- Linux Terminal
 - Wireshark
+- Scapy
+- Python
+- OpenSSL
+- Apache Web Server
 - Nmap
-
+- 
 ## Progress Documentation
 
 I document my daily progress, completed labs, key concepts, and reflections under:
