@@ -55,7 +55,7 @@ The SEED Labs documentation is available under:
 - OpenSSL
 - Apache Web Server
 - Nmap
-- 
+  
 ## Progress Documentation
 
 I document my daily progress, completed labs, key concepts, and reflections under:
