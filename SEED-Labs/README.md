@@ -2,7 +2,7 @@
 
 This folder contains documentation of selected SEED Labs completed in controlled academic lab environments.
 
-SEED Labs helped me practice cybersecurity concepts through hands-on exercises related to network security, cryptography, PKI, TLS, and web/network attack analysis.
+These labs helped me practice practical cybersecurity concepts related to network security, packet analysis, spoofing, man-in-the-middle attacks, DNS security, PKI, TLS, and secure communication.
 
 ## Covered Areas
 
@@ -29,6 +29,17 @@ SEED Labs helped me practice cybersecurity concepts through hands-on exercises r
 
 - Public-Key Infrastructure (PKI) Lab
 - Transport Layer Security (TLS) Lab
+
+## Tools Practiced
+
+- SEED Ubuntu VM
+- Docker / Docker Compose
+- Linux Terminal
+- Wireshark
+- Scapy
+- Python
+- OpenSSL
+- Apache Web Server
 
 ## Note
 
