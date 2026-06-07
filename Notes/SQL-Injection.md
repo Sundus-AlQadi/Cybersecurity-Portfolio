@@ -81,3 +81,16 @@ For MySQL and Microsoft SQL Server, the database version can be queried using:
 
 ```text
 @@version
+```
+
+### Lab 08: Listing Database Contents on Non-Oracle Databases
+
+When table and column names are unknown, database metadata can be queried to understand the database structure.
+
+On many non-Oracle databases, `information_schema` stores metadata about tables and columns.
+
+Useful metadata locations include:
+
+```text
+information_schema.tables
+information_schema.columns
