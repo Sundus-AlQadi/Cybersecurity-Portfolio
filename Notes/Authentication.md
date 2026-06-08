@@ -43,3 +43,28 @@ After identifying the valid username, I used the provided password list to test 
 ## Key Takeaway
 
 Authentication systems should avoid giving different responses for invalid usernames and incorrect passwords. Generic error messages, rate limiting, account lockout, monitoring, and multi-factor authentication can reduce the risk.
+
+## Username Enumeration via Subtle Response Differences
+
+Username enumeration can occur even when the application uses a generic error message.
+
+Sometimes the difference between invalid and valid usernames is very small, such as:
+
+- A missing full stop
+- An extra space
+- A typo
+- A slightly different response length
+- A slightly different HTML structure
+
+Because these differences may be hard to notice manually, Burp Intruder's Grep - Extract feature can be used to extract the error message and compare it across responses.
+
+### Lab 02: Subtly Different Responses
+
+In this lab, the application returned almost identical login error messages.
+
+I used Burp Intruder to test candidate usernames and used Grep - Extract to extract the error message from each response. One response contained a subtle difference, which revealed the valid username.
+
+After identifying the valid username, I tested the password parameter using the provided password list. The successful login attempt returned a `302` status code.
+
+### Key Takeaway
+Authentication responses must be consistent. Even small differences in wording, punctuation, spacing, response length, or status code can leak information about valid usernames.
