@@ -68,3 +68,31 @@ After identifying the valid username, I tested the password parameter using the 
 
 ### Key Takeaway
 Authentication responses must be consistent. Even small differences in wording, punctuation, spacing, response length, or status code can leak information about valid usernames.
+
+## Username Enumeration via Response Timing
+
+Username enumeration can happen through timing differences even when the application uses a generic error message.
+
+If the username is invalid, the application may reject the login attempt quickly. If the username is valid, the application may spend additional time checking the password.
+
+Using a long password can make this timing difference more noticeable.
+
+### X-Forwarded-For and Rate Limit Bypass
+
+Some applications use the client IP address to limit repeated login attempts.
+
+In this lab, the application trusted the `X-Forwarded-For` header. By changing this header for each request, the IP-based brute-force protection could be bypassed in the controlled lab environment.
+
+### Lab 03: Username Enumeration via Response Timing
+
+In this lab, I used Burp Intruder with a Pitchfork attack.
+
+One payload position was used for the `X-Forwarded-For` header, and another payload position was used for candidate usernames. A long static password was used to increase the timing difference.
+
+The valid username was identified by comparing response completion times.
+
+After identifying the username, I used a second Intruder attack to test candidate passwords. The successful login attempt returned a `302` status code.
+
+### Key Takeaway
+
+Authentication systems should avoid leaking information through response time. Rate limiting should also rely on trusted client information and should not trust user-controlled headers.
