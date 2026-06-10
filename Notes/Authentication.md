@@ -112,3 +112,20 @@ valid-user:valid-password
 victim-user:password1
 valid-user:valid-password
 victim-user:password2
+```
+## Username Enumeration via Account Lock
+
+Account lock mechanisms are designed to protect accounts from brute-force attacks. However, they can create username enumeration vulnerabilities if they behave differently for valid and invalid usernames.
+
+If repeated failed login attempts against a valid username trigger a message such as an account lock warning, but invalid usernames do not trigger the same behavior, attackers can identify valid usernames.
+
+### Lab 05: Username Enumeration via Account Lock
+
+In this lab, I tested candidate usernames by repeating failed login attempts.
+
+The valid username triggered a different response related to too many incorrect login attempts. I used Burp Intruder and Grep-Match to identify the response containing the account lock message.
+
+After identifying the valid username, I tested the password list and identified the correct password by finding the response that differed from the normal invalid or locked responses.
+
+### Key Takeaway
+Security controls such as account lockout must be implemented carefully. If account lock behavior reveals whether a username exists, it can create a username enumeration vulnerability.
