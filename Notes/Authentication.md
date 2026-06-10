@@ -32,7 +32,7 @@ During authentication testing, different response indicators can reveal importan
 - A `302` status code may indicate successful login if the application redirects after authentication.
 - A `200` status code usually means the login page was returned again.
 
-## Lab 01: Username Enumeration via Different Responses
+### Lab 01: Username Enumeration via Different Responses
 
 In this lab, I used Burp Intruder to test a list of candidate usernames.
 
@@ -96,3 +96,19 @@ After identifying the username, I used a second Intruder attack to test candidat
 ### Key Takeaway
 
 Authentication systems should avoid leaking information through response time. Rate limiting should also rely on trusted client information and should not trust user-controlled headers.
+
+### Lab 04: Broken Brute-Force Protection: IP Block
+
+Some applications block an IP address after a number of failed login attempts.
+
+However, this protection can be weak if it only counts consecutive failed attempts and resets the counter after a successful login.
+
+If a successful login resets the failed login counter, an attacker may be able to alternate between a valid login and attempts against a victim account.
+
+Example pattern:
+
+```text
+valid-user:valid-password
+victim-user:password1
+valid-user:valid-password
+victim-user:password2
