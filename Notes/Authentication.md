@@ -129,3 +129,21 @@ After identifying the valid username, I tested the password list and identified 
 
 ### Key Takeaway
 Security controls such as account lockout must be implemented carefully. If account lock behavior reveals whether a username exists, it can create a username enumeration vulnerability.
+
+## 2FA Simple Bypass
+
+Two-factor authentication adds an additional verification step after username and password authentication.
+
+However, 2FA must be enforced on the server side. If the application only redirects users to a 2FA page but does not restrict access to protected pages, the 2FA step may be bypassed.
+
+### Lab 06: 2FA Simple Bypass
+
+In this lab, I first logged in to my own account and completed the 2FA process to observe the normal account page URL.
+
+After logging in with the victim user's valid username and password, the application prompted for a 2FA code. Instead of entering the code, I manually navigated to the account page URL.
+
+The page loaded successfully, showing that the application did not properly verify whether the 2FA step had been completed.
+
+### Key Takeaway
+2FA must be enforced before granting access to protected resources. Applications should not rely only on the browser flow or redirects to protect sensitive pages.
+
