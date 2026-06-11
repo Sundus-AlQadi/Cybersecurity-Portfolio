@@ -147,3 +147,20 @@ The page loaded successfully, showing that the application did not properly veri
 ### Key Takeaway
 2FA must be enforced before granting access to protected resources. Applications should not rely only on the browser flow or redirects to protect sensitive pages.
 
+## 2FA Broken Logic
+
+Two-factor authentication can be vulnerable if the application uses flawed logic to decide which user's verification code is being generated or checked.
+
+In a secure design, the 2FA process should be tied to the authenticated session on the server side. The application should not trust client-controlled values such as cookies or request parameters to determine the user being verified.
+
+### Lab 07: 2FA Broken Logic
+
+In this lab, I observed that the application used a `verify` value during the 2FA process.
+
+By modifying this value to the victim username, it was possible to generate and test a 2FA code for the victim account. I then used Turbo Intruder to brute-force the 4-digit verification code in a controlled lab environment.
+
+After identifying the correct code, I submitted it while targeting the victim user's 2FA verification flow, which allowed access to the victim account page.
+
+### Key Takeaway
+
+2FA must be securely linked to the correct user session on the server side. Applications should not rely on client-controlled values to decide which user's 2FA code is being verified.
