@@ -185,6 +185,37 @@ base64(username + ":" + md5(password))
 
 Using Burp Intruder payload processing, I generated possible cookie values for the victim user by hashing candidate passwords with MD5, adding the victim username as a prefix, and encoding the result with Base64.
 
+## Offline Password Cracking
+
+Offline password cracking happens when an attacker obtains a password hash and attempts to recover the original password outside the application.
+
+This is dangerous because the attacker does not need to repeatedly submit login attempts to the website. Instead, they can test many password guesses locally against the hash.
+
+### Lab 09: Offline Password Cracking
+
+In this lab, the application stored a password hash inside the stay-logged-in cookie.
+
+After decoding the cookie using Base64, I observed that the cookie contained the username and an MD5 hash of the password.
+
+The cookie followed this structure:
+
+```text
+username:md5(password)
+```
+
+The application also had a stored XSS vulnerability in the comment functionality. By using this XSS vulnerability, the victim user's browser sent their cookies to the exploit server.
+
+After obtaining the victim user's stay-logged-in cookie, I decoded it, extracted the MD5 hash, cracked the hash offline in the controlled lab environment, and used the recovered password to access the victim account.
+
+### Key Takeaway
+
+Password hashes should never be stored in client-side cookies.
+
+Remember-me functionality should use random, server-generated tokens instead of predictable values based on usernames or passwords.
+
+Stored XSS becomes more dangerous when cookies are not properly protected or contain sensitive authentication data.
+
+
 The successful cookie was identified by finding the response that contained the `Update email` button.
 
 ### Key Takeaway
