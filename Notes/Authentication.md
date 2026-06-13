@@ -164,3 +164,29 @@ After identifying the correct code, I submitted it while targeting the victim us
 ### Key Takeaway
 
 2FA must be securely linked to the correct user session on the server side. Applications should not rely on client-controlled values to decide which user's 2FA code is being verified.
+
+## Brute-Forcing Stay-Logged-In Cookies
+
+Stay-logged-in or remember-me cookies are used to keep users authenticated after their browser session ends.
+
+These cookies are insecure if they are generated using predictable values such as usernames, passwords, or password hashes.
+
+### Lab 08: Brute-Forcing a Stay-Logged-In Cookie
+
+In this lab, I analyzed a stay-logged-in cookie and found that it was Base64-encoded.
+
+After decoding the cookie, I observed that it contained the username and a hash value. By comparing the hash with the known password, I identified that the hash was an MD5 hash of the password.
+
+The cookie followed this structure:
+
+```text
+base64(username + ":" + md5(password))
+```
+
+Using Burp Intruder payload processing, I generated possible cookie values for the victim user by hashing candidate passwords with MD5, adding the victim username as a prefix, and encoding the result with Base64.
+
+The successful cookie was identified by finding the response that contained the `Update email` button.
+
+### Key Takeaway
+
+Remember-me cookies should be random, server-generated tokens. They should not be based on predictable values such as usernames or password hashes.
