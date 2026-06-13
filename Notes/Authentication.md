@@ -221,3 +221,20 @@ The successful cookie was identified by finding the response that contained the 
 ### Key Takeaway
 
 Remember-me cookies should be random, server-generated tokens. They should not be based on predictable values such as usernames or password hashes.
+
+
+## Password Reset Broken Logic
+
+Password reset functionality is security-sensitive because it allows users to regain access to their accounts.
+
+A secure password reset flow must ensure that the reset token is valid, unexpired, and tied to the correct user account.
+
+### Lab 10: Password Reset Broken Logic
+
+In this lab, the application included the username in a hidden input field during the password reset process.
+
+The reset token was not properly enforced when submitting the new password. By modifying the username parameter, it was possible to reset another user's password.
+
+### Key Takeaway
+
+Password reset tokens must be validated on the server side and securely linked to the correct user. Applications should not rely on hidden fields or client-controlled parameters to decide which account is being updated.
