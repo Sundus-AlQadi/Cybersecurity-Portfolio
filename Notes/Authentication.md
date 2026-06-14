@@ -264,3 +264,39 @@ Password reset links must always be generated using trusted server-side configur
 Applications should never trust user-controlled headers such as `X-Forwarded-Host` when generating security-sensitive URLs.
 
 Password reset tokens should be treated as highly sensitive credentials because possession of a valid token may allow complete account takeover.
+
+## Password Brute-Force via Password Change
+
+Password change functionality can sometimes leak information through different error messages.
+
+If an application responds differently depending on whether the current password is correct, attackers may be able to identify valid passwords without actually changing the password.
+
+### Lab 12: Password Brute-Force via Password Change
+
+In this lab, the password change functionality required the current password before allowing a password update.
+
+I observed that different error messages were returned depending on whether the current password was correct.
+
+When an incorrect current password was provided, the application returned:
+
+```text
+Current password is incorrect
+```
+
+When a valid current password was provided but the two new password fields did not match, the application returned:
+
+```text
+New passwords do not match
+```
+
+Using Burp Intruder, I targeted the current-password parameter with the provided password list while keeping the new password fields intentionally different.
+
+The password that generated the "New passwords do not match" response was identified as the victim user's valid password.
+
+I then logged in successfully as the victim user.
+
+### Key Takeaway
+
+Authentication-related functionality should not reveal different responses based on whether a password is correct.
+
+Applications should use consistent error messages to prevent password enumeration and brute-force attacks.
