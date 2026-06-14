@@ -238,3 +238,29 @@ The reset token was not properly enforced when submitting the new password. By m
 ### Key Takeaway
 
 Password reset tokens must be validated on the server side and securely linked to the correct user. Applications should not rely on hidden fields or client-controlled parameters to decide which account is being updated.
+
+## Password Reset Poisoning via Middleware
+
+Password reset poisoning happens when an application uses untrusted request data to generate password reset links.
+
+If an attacker can control values such as the `Host` or `X-Forwarded-Host` header, the application may generate password reset URLs that point to an attacker-controlled domain instead of the legitimate application.
+
+When a victim clicks the poisoned password reset link, sensitive reset tokens may be exposed to the attacker.
+
+### Lab 11: Password Reset Poisoning via Middleware
+
+In this lab, I observed that the application used the `X-Forwarded-Host` header when generating password reset links.
+
+By modifying this header to point to the exploit server and submitting a password reset request for the victim user, the application generated a password reset email containing an attacker-controlled URL.
+
+When the victim clicked the link, the password reset token was exposed in the exploit server access log.
+
+I then used the stolen token to reset the victim user's password and successfully accessed the victim account.
+
+### Key Takeaway
+
+Password reset links must always be generated using trusted server-side configuration.
+
+Applications should never trust user-controlled headers such as `X-Forwarded-Host` when generating security-sensitive URLs.
+
+Password reset tokens should be treated as highly sensitive credentials because possession of a valid token may allow complete account takeover.
