@@ -68,12 +68,18 @@ My technical notes are organized under:
 
 `Notes/`
 
+## Current Status
+
+- Completed Authentication Vulnerabilities learning path
+- Documented selected Authentication and SQL Injection labs
+- Continuing with Access Control and additional Web Security Academy topics
+  
 ## Upcoming Work
 
-- Authentication vulnerability labs
-- Access Control labs
-- Cross-Site Scripting labs
-- File Upload vulnerability labs
+- Access Control learning path
+- Cross-Site Scripting (XSS) learning path
+- File Upload Vulnerabilities
+- Business Logic Vulnerabilities
 - Practical AI Security projects, including:
   - AI Phishing Detection
   - AI Log Analysis
