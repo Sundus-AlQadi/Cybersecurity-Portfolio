@@ -19,7 +19,28 @@ This portfolio documents my hands-on learning journey through controlled cyberse
 
 ### PortSwigger Web Security Academy
 
-I have started completing and documenting hands-on labs focused on SQL Injection, including:
+I am completing and documenting hands-on labs from PortSwigger Web Security Academy to build practical web application security and penetration testing skills.
+
+#### Authentication Vulnerabilities
+
+I completed the Authentication Vulnerabilities learning path and documented selected hands-on labs covering:
+
+- Username Enumeration
+- Password Enumeration
+- Brute Force Attacks
+- Broken Brute Force Protection
+- Account Lock Logic Flaws
+- Two-Factor Authentication (2FA) Bypass
+- Two-Factor Authentication (2FA) Broken Logic
+- Stay-Logged-In Cookie Vulnerabilities
+- Offline Password Cracking
+- Password Reset Vulnerabilities
+- Password Reset Poisoning
+- Password Change Logic Flaws
+
+#### SQL Injection
+
+I have also documented SQL Injection labs covering:
 
 - SQL Injection in WHERE clauses
 - Login bypass using SQL Injection
@@ -29,6 +50,7 @@ I have started completing and documenting hands-on labs focused on SQL Injection
 - Retrieving data from other database tables
 - Retrieving multiple values in a single column
 - Querying database type and version
+- Listing database contents
 
 The lab documentation is available under:
 
