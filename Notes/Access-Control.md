@@ -49,3 +49,21 @@ Authorization decisions must be enforced on the server side.
 Client-controlled values should never determine whether a user is an administrator.
 
 Security by obscurity is not access control. Admin functionality must be protected by server-side authorization checks, even if the URL is hidden or difficult to guess.
+
+## User Role Modification Through Profile Updates
+
+Some applications expose profile update functionality that accepts more parameters than intended.
+
+If sensitive fields such as role identifiers are accepted from user-controlled requests, attackers may be able to elevate their privileges.
+
+### Lab 04: User Role Can Be Modified in User Profile
+
+In this lab, a profile update request exposed role-related information.
+
+By modifying the JSON request and adding a role-related field, administrative privileges were obtained and the admin panel became accessible.
+
+### Key Takeaway
+
+Profile update functionality should only accept approved fields.
+
+Sensitive attributes such as role IDs, permissions, and administrator flags must be protected from user modification.
