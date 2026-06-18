@@ -154,4 +154,32 @@ By supplying administrative paths through this header, protected functionality b
 
 Access control should always be enforced by the application itself.
 
+## Method-Based Access Control
+
+Some applications apply authorization checks differently depending on the HTTP method being used.
+
+For example, a POST request may be protected while an equivalent GET request performs the same action without proper authorization checks.
+
+### Common HTTP Methods
+
+* GET → Retrieve data
+* POST → Submit or create data
+* PUT → Update data
+* DELETE → Remove data
+
+### Lab 07: Method-Based Access Control Can Be Circumvented
+
+In this lab, administrative functionality was protected when accessed using POST requests.
+
+However, the same functionality became accessible after converting the request to a GET request.
+
+This allowed privilege escalation and administrative access.
+
+### Key Takeaway
+
+Authorization should be based on user permissions, not on the HTTP method being used.
+
+Changing the request method should never bypass security controls.
+
+
 Front-end filtering should never be the only protection mechanism.
