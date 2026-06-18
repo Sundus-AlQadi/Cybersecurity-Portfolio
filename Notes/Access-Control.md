@@ -226,3 +226,25 @@ Redirects are not access control.
 
 Applications must verify authorization before generating sensitive data, not after.
 
+## Password Disclosure Through Broken Access Control
+
+Applications should never expose stored passwords.
+
+If an application can display a user's existing password, this usually indicates that passwords are stored insecurely rather than as secure hashes.
+
+### Lab 10: User ID Controlled by Request Parameter with Password Disclosure
+
+In this lab, account information was selected using a user-controlled identifier.
+
+By changing the identifier to target the administrator account, the administrator's password was exposed within the account page response.
+
+The password was then used to access the administrator account and perform administrative actions.
+
+### Key Takeaway
+
+Passwords should never be recoverable.
+
+A properly designed application stores password hashes and therefore cannot display a user's existing password.
+
+
+
