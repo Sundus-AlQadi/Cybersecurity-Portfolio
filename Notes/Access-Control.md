@@ -206,3 +206,23 @@ GUIDs improve identifier unpredictability but do not replace proper access contr
 
 Authorization checks must always verify whether a user is allowed to access a resource.
 
+## Data Leakage in Redirect Responses
+
+Some applications redirect users away from unauthorized resources but still include sensitive data in the response body.
+
+A browser may automatically follow the redirect and hide the original response, but tools like Burp Repeater can show the full response body.
+
+### Lab 09: User ID Controlled by Request Parameter with Data Leakage in Redirect
+
+In this lab, modifying the user `id` parameter caused the application to redirect away from the page.
+
+However, the redirect response body still contained Carlos's API key.
+
+By inspecting the response in Burp Repeater, I was able to retrieve the sensitive data.
+
+### Key Takeaway
+
+Redirects are not access control.
+
+Applications must verify authorization before generating sensitive data, not after.
+
