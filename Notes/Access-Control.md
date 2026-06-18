@@ -86,3 +86,72 @@ By changing the identifier from my own username to another user's username, I wa
 Authorization checks must validate resource ownership, not just authentication status.
 
 Changing a user identifier should never allow access to another user's data.
+
+## Reference: Front-End and Back-End Request Handling
+
+Modern web applications may use more than one layer before the request reaches the actual application.
+
+```text
+User
+ ↓
+Nginx / Reverse Proxy / Load Balancer
+ ↓
+Application
+```
+
+### Nginx
+
+Nginx is a web server and reverse proxy that can sit in front of web applications.
+
+It can handle requests, forward traffic, block certain paths, serve static files, or apply basic filtering rules.
+
+### Reverse Proxy
+
+A reverse proxy receives requests from users and forwards them to internal applications.
+
+The user communicates with the reverse proxy, not directly with the internal application.
+
+### Load Balancer
+
+A load balancer distributes requests across multiple servers.
+
+This helps applications handle more traffic and improves availability.
+
+### Important Security Concept
+
+If the front-end system and back-end application interpret requests differently, access control bypasses may become possible.
+
+For example, the front-end may block access to `/admin`, but the back-end may still process `/admin` if it receives that path through a trusted header such as `X-Original-URL`.
+
+## Front-End and Back-End Access Control Mismatches
+
+Many modern applications use multiple layers such as reverse proxies, load balancers, and back-end applications.
+
+Sometimes these systems interpret requests differently.
+
+If access control is enforced only at the front-end layer, attackers may be able to reach protected functionality through alternative request paths or headers.
+
+### X-Original-URL Header
+
+Some frameworks support special headers such as:
+
+* X-Original-URL
+* X-Rewrite-URL
+
+These headers may influence how the back-end processes requests.
+
+If improperly trusted, they can allow access control bypasses.
+
+### Lab 06: URL-Based Access Control Can Be Circumvented
+
+In this lab, the front-end blocked access to administrative URLs.
+
+However, the back-end trusted the X-Original-URL header and processed requests based on its value.
+
+By supplying administrative paths through this header, protected functionality became accessible.
+
+### Key Takeaway
+
+Access control should always be enforced by the application itself.
+
+Front-end filtering should never be the only protection mechanism.
