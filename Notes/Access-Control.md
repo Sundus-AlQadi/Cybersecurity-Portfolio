@@ -183,3 +183,26 @@ Changing the request method should never bypass security controls.
 
 
 Front-end filtering should never be the only protection mechanism.
+
+## IDOR with Unpredictable Identifiers
+
+Developers sometimes replace sequential IDs with GUIDs to make resource identifiers harder to guess.
+
+While this improves unpredictability, it does not solve authorization problems.
+
+If attackers can obtain a valid GUID through public content, logs, APIs, or other exposed resources, the vulnerability remains exploitable.
+
+### Lab 08: User ID Controlled by Request Parameter, with Unpredictable User IDs
+
+In this lab, user accounts were identified using GUIDs instead of predictable usernames.
+
+Carlos's GUID was disclosed through publicly accessible content.
+
+After obtaining the GUID, I modified the account identifier and accessed Carlos's API key.
+
+### Key Takeaway
+
+GUIDs improve identifier unpredictability but do not replace proper access control.
+
+Authorization checks must always verify whether a user is allowed to access a resource.
+
