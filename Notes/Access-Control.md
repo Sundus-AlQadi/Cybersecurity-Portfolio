@@ -67,3 +67,22 @@ By modifying the JSON request and adding a role-related field, administrative pr
 Profile update functionality should only accept approved fields.
 
 Sensitive attributes such as role IDs, permissions, and administrator flags must be protected from user modification.
+
+
+## User ID Controlled by Request Parameter (IDOR)
+
+Applications often use identifiers in URLs to retrieve user-specific resources.
+
+If the application does not verify that the authenticated user owns the requested resource, attackers may be able to access data belonging to other users simply by modifying the identifier.
+
+### Lab 05: User ID Controlled by Request Parameter
+
+In this lab, the account page used a user identifier parameter to determine which account information should be displayed.
+
+By changing the identifier from my own username to another user's username, I was able to access Carlos's account information and retrieve his API key.
+
+### Key Takeaway
+
+Authorization checks must validate resource ownership, not just authentication status.
+
+Changing a user identifier should never allow access to another user's data.
