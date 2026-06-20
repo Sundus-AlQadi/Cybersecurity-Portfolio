@@ -96,7 +96,6 @@ My technical notes are organized under:
   
 ## Upcoming Work
 
-- Access Control learning path
 - Cross-Site Scripting (XSS) learning path
 - File Upload Vulnerabilities
 - Business Logic Vulnerabilities
