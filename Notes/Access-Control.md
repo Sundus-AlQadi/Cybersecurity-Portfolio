@@ -246,5 +246,75 @@ Passwords should never be recoverable.
 
 A properly designed application stores password hashes and therefore cannot display a user's existing password.
 
+## IDOR Through File Access
+
+IDOR vulnerabilities can affect files, documents, images, chat logs, invoices, and many other resources.
+
+If an application exposes files using predictable identifiers and does not verify ownership, attackers may access files belonging to other users.
+
+### Lab 11: Insecure Direct Object References
+
+In this lab, chat transcripts were stored as text files on the server.
+
+The transcript file names followed a predictable numbering scheme.
+
+By modifying the file identifier, I accessed another user's transcript and obtained sensitive information.
+
+### Key Takeaway
+
+Access control must protect every resource, including files.
+
+A user should never gain access to another user's documents simply by changing a file identifier.
+
+## Multi-Step Workflow Vulnerabilities
+
+Many applications implement sensitive actions using multiple steps.
+
+Examples include:
+
+* User promotion
+* Money transfers
+* Approval workflows
+* Account deletion
+* Permission changes
+
+If authorization is enforced only on the first step, attackers may directly invoke later steps.
+
+### Lab 12: Multi-Step Process with No Access Control on One Step
+
+In this lab, user promotion required multiple steps.
+
+The application protected the initial stage but failed to verify authorization during the final confirmation stage.
+
+By replaying the confirmation request using a normal user session, administrator privileges were obtained.
+
+### Key Takeaway
+
+Every sensitive step must perform its own authorization check.
+
+Security should never depend on the assumption that earlier steps have already been completed legitimately.
+
+## Referer-Based Access Control
+
+The Referer header indicates the page from which a request originated.
+
+Example:
+
+Referer: https://example.com/admin
+
+Because HTTP headers are controlled by the client, attackers can modify them using interception tools.
+
+### Lab 13: Referer-Based Access Control
+
+In this lab, administrative actions were authorized based on the Referer header.
+
+By replaying an administrative request with a non-administrator session while preserving the Referer value, administrator privileges were obtained.
+
+### Key Takeaway
+
+Authorization should be based on authenticated user permissions, not on client-controlled headers.
+
+Headers such as Referer must never be trusted for access control decisions.
+
 
 
