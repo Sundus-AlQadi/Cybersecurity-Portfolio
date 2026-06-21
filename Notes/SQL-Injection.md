@@ -94,3 +94,36 @@ Useful metadata locations include:
 ```text
 information_schema.tables
 information_schema.columns
+```
+
+### Lab 09: Querying the Database Type and Version on Oracle
+
+Different database systems use different syntax and metadata locations.
+
+Oracle databases store version information in:
+
+```text
+v$version
+```
+
+The version details are stored in the:
+
+```text
+BANNER
+```
+
+column.
+
+Oracle also commonly uses a special table called:
+
+```text
+dual
+```
+
+for standalone SELECT statements.
+
+Database version information can be useful because different database systems support different SQL syntax, functions, tables, and metadata structures.
+
+#### Key Takeaway
+
+Database enumeration helps identify the database platform and version, which can guide later SQL injection techniques and payload construction.
