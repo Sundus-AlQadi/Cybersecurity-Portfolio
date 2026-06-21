@@ -127,3 +127,61 @@ Database version information can be useful because different database systems su
 #### Key Takeaway
 
 Database enumeration helps identify the database platform and version, which can guide later SQL injection techniques and payload construction.
+
+### Lab 10: Listing Database Contents on Oracle
+
+When table and column names are unknown, Oracle database metadata can be queried to understand the database structure.
+
+Unlike many non-Oracle databases, Oracle does not use:
+
+```text
+information_schema
+```
+
+Instead, Oracle stores metadata in system tables such as:
+
+```text
+all_tables
+all_tab_columns
+```
+
+Useful metadata locations include:
+
+```text
+all_tables
+```
+
+Used to retrieve table names.
+
+```text
+all_tab_columns
+```
+
+Used to retrieve column names for a specific table.
+
+Oracle also commonly uses:
+
+```text
+dual
+```
+
+for standalone SELECT statements.
+
+#### Key Takeaway
+
+Database enumeration techniques vary between database systems.
+
+In Oracle databases, metadata stored in `all_tables` and `all_tab_columns` can be used to discover table names, column names, and ultimately locate sensitive information.
+
+### Lab 11: Blind SQL Injection with Conditional Responses
+
+In some SQL injection vulnerabilities, query results are not displayed directly to the user.
+
+Instead, the application may behave differently depending on whether a condition is true or false.
+
+This is known as Blind SQL Injection.
+
+In this lab, the application displayed a:
+
+```text
+Welcome back
