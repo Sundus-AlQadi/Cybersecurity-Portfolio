@@ -185,3 +185,196 @@ In this lab, the application displayed a:
 
 ```text
 Welcome back
+```
+
+### Lab 12: Blind SQL Injection with Conditional Errors
+
+This lab was similar to Lab 11 because the query results were still hidden.
+
+However, there was no useful message such as:
+
+```text
+Welcome back
+```
+
+to indicate whether a condition was true or false.
+
+Instead, the useful difference was the application error behavior.
+
+The application returned an error when the injected SQL query caused a database error.
+
+To exploit this, a conditional error was created using:
+
+```sql
+CASE WHEN condition THEN TO_CHAR(1/0) ELSE '' END
+```
+
+The logic was:
+
+```text
+If the condition is true  → trigger division by zero → error
+If the condition is false → return empty string      → no error
+```
+
+This made it possible to treat errors as true or false indicators.
+
+In this lab:
+
+```text
+HTTP 500 = condition is true
+HTTP 200 = condition is false
+```
+
+Oracle-specific syntax was also important.
+
+The `dual` table was used for standalone `SELECT` statements:
+
+```sql
+SELECT '' FROM dual
+```
+
+The `users` table was tested to confirm that it existed.
+
+The administrator user was then confirmed using a condition inside the `users` table.
+
+The password length was discovered using:
+
+```sql
+LENGTH(password)
+```
+
+Individual password characters were extracted using:
+
+```sql
+SUBSTR(password, position, 1)
+```
+
+Burp Intruder was used to automate the testing process across all positions and possible characters.
+
+#### Key Takeaway
+
+Blind SQL injection can also be exploited through conditional errors.
+
+Even when the application does not display query results or visible true/false messages, database errors can still reveal sensitive information.
+
+By intentionally triggering an error only when a condition is true, attackers can extract hidden database values one character at a time.
+
+### Lab 13: Visible Error-Based SQL Injection
+
+In some SQL injection vulnerabilities, the application does not return query results directly.
+
+However, the application may display detailed database error messages.
+
+This is dangerous because error messages can reveal sensitive backend information.
+
+In this lab, the application returned a visible database error when the injected SQL query was invalid.
+
+The error message exposed details about the SQL query and later leaked values from the database.
+
+Unlike blind SQL injection, this lab did not require asking many true or false questions.
+
+Instead, the attacker forced the database to produce an error that included the sensitive value.
+
+The main technique used was type conversion with:
+
+```sql
+CAST()
+```
+
+The payload attempted to convert a text value into an integer:
+
+```sql
+CAST((SELECT password FROM users LIMIT 1) AS int)
+```
+
+Since the password is a text value, the conversion failed.
+
+The database error message then revealed the password inside the response.
+
+#### Key Takeaway
+
+Visible error-based SQL injection can expose sensitive data directly through database error messages.
+
+Even if query results are hidden, detailed errors can still leak usernames, passwords, and database structure.
+
+Applications should never expose verbose database errors to users in production environments.
+
+### Lab 14: Blind SQL Injection with Time Delays
+
+In some blind SQL injection cases, the application does not display query results, does not show useful errors, and does not change its visible response based on true or false conditions.
+
+In this situation, response time can be used as the indicator.
+
+This is known as time-based blind SQL injection.
+
+The attacker injects a database function that causes a delay.
+
+In this lab, the backend database used PostgreSQL, so the delay function was:
+
+```sql
+pg_sleep(10)
+```
+
+The injected payload was:
+
+```sql
+x'||pg_sleep(10)--
+```
+
+If the application response takes around 10 seconds, it means the injected SQL was executed successfully.
+
+#### Key Takeaway
+
+Time-based blind SQL injection uses delay instead of visible output.
+
+Even when results, errors, and response differences are hidden, the time taken by the application to respond can reveal whether injected SQL code was executed.
+
+
+### Lab 15: Blind SQL Injection with Time Delays and Information Retrieval
+
+In some blind SQL injection vulnerabilities, the application does not show query results, does not return useful errors, and does not change the page content based on true or false conditions.
+
+In this situation, response time can be used to infer information.
+
+This is known as time-based blind SQL injection.
+
+In this lab, the PostgreSQL function used to create a delay was:
+
+```sql
+pg_sleep(10)
+```
+
+The payload used a conditional statement:
+
+```sql
+CASE WHEN condition THEN pg_sleep(10) ELSE pg_sleep(0) END
+```
+
+This means:
+
+```text
+If the condition is true  → wait 10 seconds
+If the condition is false → respond immediately
+```
+
+This timing difference allowed the administrator password to be extracted step by step.
+
+The password length was identified using:
+
+```sql
+LENGTH(password)
+```
+
+Each password character was identified using:
+
+```sql
+SUBSTRING(password, position, 1)
+```
+
+Burp Intruder was used to test possible characters, and the correct character was identified by finding the request that took around 10 seconds to complete.
+
+#### Key Takeaway
+
+Time-based blind SQL injection can retrieve sensitive information even when the application hides results, errors, and visible response differences.
+
+The only signal needed is the time it takes for the application to respond.
