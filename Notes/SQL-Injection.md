@@ -378,3 +378,94 @@ Burp Intruder was used to test possible characters, and the correct character wa
 Time-based blind SQL injection can retrieve sensitive information even when the application hides results, errors, and visible response differences.
 
 The only signal needed is the time it takes for the application to respond.
+
+### Lab 16: Blind SQL Injection with Out-of-Band Interaction
+
+This lab introduced out-of-band SQL injection.
+
+In this type of blind SQL injection, the application does not display query results, does not show useful errors, does not change its response, and does not produce a reliable time delay.
+
+Instead, the payload is designed to make the backend system interact with an external domain.
+
+In PortSwigger labs, this is done using Burp Collaborator.
+
+This lab was reviewed and marked as pending because it requires Burp Collaborator access, which is not available in the current Burp Suite Community Edition setup.
+
+#### Key Takeaway
+
+Out-of-band SQL injection is useful when the application gives no visible feedback.
+
+A DNS or HTTP interaction with Burp Collaborator can confirm that the injected SQL payload was executed.
+
+Status: Pending - requires Burp Collaborator access.
+
+---
+
+### Lab 17: Blind SQL Injection with Out-of-Band Data Exfiltration
+
+This lab builds on out-of-band SQL injection.
+
+Instead of only triggering a DNS lookup, the goal is to exfiltrate sensitive data through the out-of-band channel.
+
+The payload would cause the backend system to send database information, such as the administrator password, to a Burp Collaborator domain.
+
+This lab was reviewed and marked as pending because it requires Burp Collaborator access, which is not available in the current Burp Suite Community Edition setup.
+
+#### Key Takeaway
+
+Out-of-band data exfiltration can retrieve sensitive information even when the application does not return results, errors, or timing differences.
+
+Status: Pending - requires Burp Collaborator access.
+
+---
+
+### Lab 18: SQL Injection with Filter Bypass via XML Encoding
+
+Some applications attempt to block SQL injection by filtering dangerous keywords such as:
+
+```text
+UNION
+SELECT
+```
+
+However, filters can sometimes be bypassed if the application decodes or transforms the input before using it in a SQL query.
+
+In this lab, the SQL injection vulnerability was located in the stock check feature.
+
+The application sent the `productId` and `storeId` values in XML format.
+
+The vulnerable input was:
+
+```xml
+<storeId>
+```
+
+A normal UNION-based SQL injection payload was blocked by the filter.
+
+To bypass the filter, the payload was encoded using XML entities.
+
+The application decoded the XML entities before processing the SQL query, allowing the payload to execute.
+
+The final goal was to retrieve usernames and passwords from the `users` table.
+
+Because the query returned only one column, the username and password were concatenated using:
+
+```sql
+username || '~' || password
+```
+
+This allowed the credentials to appear in one output value:
+
+```text
+username~password
+```
+
+The administrator password was successfully retrieved and used to solve the lab.
+
+#### Key Takeaway
+
+Encoding can sometimes bypass weak input filters.
+
+XML entity encoding can hide SQL keywords from filters, but the backend may decode them before executing the SQL query.
+
+Secure applications should use parameterized queries instead of relying on keyword filtering.
