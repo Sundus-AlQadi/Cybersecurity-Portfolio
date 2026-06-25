@@ -146,3 +146,93 @@ Applications should encode user-controlled input before displaying it in HTML, a
 Input validation can help, but it should not replace output encoding.
 
 Content Security Policy can also reduce XSS impact, but it should be used as an additional layer, not the only protection.
+
+### Lab 03: DOM XSS in `document.write` Sink Using Source `location.search`
+
+DOM-based XSS happens when the vulnerability exists in client-side JavaScript.
+
+In this lab, the source was:
+
+```javascript
+location.search
+```
+
+This means the application read data from the URL query string.
+
+The sink was:
+
+```javascript
+document.write()
+```
+
+This function writes content directly into the page.
+
+The search input was placed inside an `img src` attribute. Because the input was not safely handled, it was possible to break out of the attribute and inject new HTML.
+
+The payload used was:
+
+```html
+"><svg onload=alert(1)>
+```
+
+The first part closed the existing attribute and tag:
+
+```html
+">
+```
+
+Then a new SVG element was injected:
+
+```html
+<svg onload=alert(1)>
+```
+
+When the SVG loaded, the browser executed the JavaScript and displayed an alert.
+
+#### Key Takeaway
+
+DOM XSS can happen even when the server does not directly return the payload in the response.
+
+If client-side JavaScript reads user-controlled data and writes it into the page using unsafe sinks like `document.write()`, JavaScript execution may be possible.
+
+### Lab 04: DOM XSS in `innerHTML` Sink Using Source `location.search`
+
+This lab focused on DOM-based XSS using the `innerHTML` sink.
+
+The source was:
+
+```javascript
+location.search
+```
+
+This means the application read data from the URL query string.
+
+The sink was:
+
+```javascript
+innerHTML
+```
+
+This is dangerous because `innerHTML` treats inserted content as HTML, not just plain text.
+
+The payload used was:
+
+```html
+<img src=1 onerror=alert(1)>
+```
+
+The payload created an image element with an invalid source.
+
+Because the image failed to load, the browser triggered the `onerror` event handler.
+
+This executed:
+
+```javascript
+alert(1)
+```
+
+#### Key Takeaway
+
+DOM XSS can occur when client-side JavaScript reads user-controlled data and inserts it into the page using unsafe sinks like `innerHTML`.
+
+When displaying user-controlled text, safer APIs such as `textContent` should be used instead of `innerHTML`.
