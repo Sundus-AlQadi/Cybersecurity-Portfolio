@@ -12,6 +12,7 @@ This portfolio documents my practical cybersecurity learning journey through con
 * SQL Injection
 * Authentication Vulnerabilities
 * Access Control Vulnerabilities
+* Cross-Site Scripting (XSS)
 * Network Security Fundamentals
 * Burp Suite
 * AI for Cybersecurity
@@ -73,6 +74,23 @@ Completed labs covered:
 * URL-based access control bypass
 * Method-based access control bypass
 * Information disclosure through broken authorization
+
+#### Cross-Site Scripting (XSS)
+
+Currently in progress.
+
+Completed labs so far covered:
+
+* Reflected XSS in HTML context
+* Stored XSS in HTML context
+* DOM-based XSS
+* `location.search` as a DOM XSS source
+* `document.write()` as a dangerous sink
+* `innerHTML` as a dangerous sink
+* HTML attribute breakout
+* JavaScript execution using event handlers
+* Basic XSS payload testing
+* Output encoding and sanitization concepts
 
 The PortSwigger lab documentation is available under:
 
@@ -136,14 +154,14 @@ Notes/
 * Completed Authentication Vulnerabilities labs and documentation
 * Completed Access Control Vulnerabilities labs and documentation
 * Completed SQL Injection labs and documentation
+* Started Cross-Site Scripting learning path
 * Completed selected SEED Labs in controlled academic environments
-* Continuing with additional Web Security Academy learning paths
 
 Note: Some out-of-band SQL Injection labs were reviewed and marked as pending due to Burp Collaborator tool requirements.
 
 ## Upcoming Work
 
-* Cross-Site Scripting (XSS)
+* Continue Cross-Site Scripting (XSS)
 * File Upload Vulnerabilities
 * Business Logic Vulnerabilities
 * Server-Side Request Forgery (SSRF)
