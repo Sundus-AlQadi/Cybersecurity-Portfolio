@@ -236,3 +236,161 @@ alert(1)
 DOM XSS can occur when client-side JavaScript reads user-controlled data and inserts it into the page using unsafe sinks like `innerHTML`.
 
 When displaying user-controlled text, safer APIs such as `textContent` should be used instead of `innerHTML`.
+
+### Lab 05: DOM XSS in jQuery Anchor `href` Attribute Sink Using `location.search`
+
+This lab focused on DOM-based XSS through an anchor tag's `href` attribute.
+
+The source was:
+
+```javascript
+location.search
+```
+
+This means the application read data from the URL query string.
+
+The sink was jQuery's `.attr()` function:
+
+```javascript
+$('#backLink').attr("href", value)
+```
+
+The application took the `returnPath` parameter from the URL and placed it inside the Back link's `href` attribute.
+
+A normal value such as:
+
+```text
+/feedback
+```
+
+would make the Back link navigate to that page.
+
+However, by setting the value to a JavaScript URL, the link could execute JavaScript when clicked.
+
+The payload used was:
+
+```text
+javascript%3Aalert(document.cookie)
+```
+
+After URL decoding, this becomes:
+
+```javascript
+javascript:alert(document.cookie)
+```
+
+When the Back link was clicked, the browser executed the JavaScript and displayed the cookie.
+
+#### Key Takeaway
+
+DOM XSS can occur when user-controlled URL parameters are assigned to sensitive HTML attributes such as `href`.
+
+Applications should validate return paths and should not allow dangerous URL schemes like `javascript:`.
+
+### Lab 06: DOM XSS in jQuery Selector Sink Using a Hashchange Event
+
+This lab focused on DOM-based XSS using the URL hash and a jQuery selector sink.
+
+The source was:
+
+```javascript
+location.hash
+```
+
+This means the application read data from the part of the URL after the `#` symbol.
+
+The event used was:
+
+```javascript
+hashchange
+```
+
+This event runs when the hash part of the URL changes.
+
+The sink was jQuery's selector function:
+
+```javascript
+$()
+```
+
+The application expected the hash to contain a normal post title or selector value that could be used to scroll to a blog post.
+
+However, because the hash value was user-controlled, it was possible to inject HTML instead of a normal selector.
+
+The exploit used an iframe:
+
+```html
+<iframe src="https://0a9900f104e223f380a5037500a000be.web-security-academy.net/#" onload="this.src=this.src+'<img src=x onerror=print()>'"></iframe>
+```
+
+The iframe first loaded the vulnerable page with an empty hash.
+
+After the iframe loaded, the `onload` event appended the payload to the hash.
+
+The payload was:
+
+```html
+<img src=x onerror=print()>
+```
+
+The invalid image source caused the image to fail loading.
+
+When the image failed to load, the `onerror` event executed:
+
+```javascript
+print()
+```
+
+#### Key Takeaway
+
+DOM XSS can happen when client-side JavaScript uses `location.hash` unsafely.
+
+If user-controlled hash values are passed into dangerous sinks such as jQuery's `$()` selector, an attacker may inject HTML or JavaScript behavior.
+
+The `hashchange` event can be abused to trigger vulnerable JavaScript after the page has loaded.
+
+### Lab 07: Reflected XSS into Attribute with Angle Brackets HTML-Encoded
+
+This lab focused on reflected XSS in an HTML attribute context.
+
+The search input was reflected inside a quoted attribute.
+
+Angle brackets were HTML-encoded, so payloads such as:
+
+```html
+<script>alert(1)</script>
+```
+
+would not work because the browser would treat the angle brackets as text instead of HTML.
+
+The successful technique was to break out of the existing attribute value and inject a new event handler attribute.
+
+The payload used was:
+
+```html
+"onmouseover="alert(1)
+```
+
+The URL-encoded version was:
+
+```text
+%22onmouseover=%22alert(1)
+```
+
+The first quotation mark closed the original attribute value.
+
+Then the payload added:
+
+```html
+onmouseover="alert(1)"
+```
+
+When the mouse moved over the affected element, the browser executed the JavaScript.
+
+#### Key Takeaway
+
+Encoding `<` and `>` is not always enough to prevent XSS.
+
+If user input is inserted inside an HTML attribute, quotation marks and attribute-specific characters must also be encoded properly.
+
+XSS prevention must be context-aware because the correct defense depends on where the input appears in the page.
