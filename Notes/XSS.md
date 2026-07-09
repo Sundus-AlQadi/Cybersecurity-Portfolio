@@ -394,3 +394,93 @@ Encoding `<` and `>` is not always enough to prevent XSS.
 If user input is inserted inside an HTML attribute, quotation marks and attribute-specific characters must also be encoded properly.
 
 XSS prevention must be context-aware because the correct defense depends on where the input appears in the page.
+
+### Lab 08: Stored XSS into Anchor `href` Attribute with Double Quotes HTML-Encoded
+
+This lab focused on stored XSS through an anchor tag's `href` attribute.
+
+The vulnerable input was the Website field in the comment form.
+
+The application stored the Website value and later used it as the link target for the comment author's name.
+
+A normal website value would create a link such as:
+
+```html
+<a href="https://example.com">Author Name</a>
+```
+
+However, the application allowed a JavaScript URL:
+
+```javascript
+javascript:alert(1)
+```
+
+This caused the author's name link to execute JavaScript when clicked.
+
+Double quotes were HTML-encoded, so breaking out of the attribute was not the technique used in this lab.
+
+Instead, the payload worked because the `href` attribute itself accepted a dangerous URL scheme.
+
+#### Key Takeaway
+
+Encoding quotes can prevent attribute breakout, but it does not fully protect against XSS in URL attributes.
+
+When user input is used in an `href` attribute, the application must also validate the URL scheme and block dangerous values such as `javascript:`.
+
+### Lab 09: Reflected XSS into a JavaScript String with Angle Brackets HTML-Encoded
+
+This lab focused on reflected XSS inside a JavaScript string context.
+
+The search input was reflected inside JavaScript code, not directly inside HTML.
+
+Angle brackets were HTML-encoded, so payloads that rely on creating HTML tags, such as:
+
+```html
+<script>alert(1)</script>
+```
+
+would not work.
+
+The successful technique was to break out of the JavaScript string and inject JavaScript directly.
+
+The payload used was:
+
+```javascript
+'-alert(1)-'
+```
+
+The request used was:
+
+```http
+GET /?search='-alert(1)-' HTTP/2
+```
+
+The first single quote closed the original JavaScript string.
+
+Then `alert(1)` executed as JavaScript.
+
+The remaining characters helped keep the JavaScript syntax valid.
+
+#### Key Takeaway
+
+When input is reflected inside a JavaScript string, the payload must escape the string first.
+
+Encoding `<` and `>` is not enough if characters such as quotes are not safely escaped in JavaScript contexts.
+
+---
+
+### XSS Context and Payload Summary
+
+| Lab Context       | Where the input appears    | Example Payload             |
+| ----------------- | -------------------------- | --------------------------- |
+| HTML context      | Inside the HTML body       | `<script>alert(1)</script>` |
+| Attribute context | Inside an HTML attribute   | `"onmouseover="alert(1)`    |
+| `href` attribute  | Inside a link target       | `javascript:alert(1)`       |
+| JavaScript string | Inside a JavaScript string | `'-alert(1)-'`              |
+
+#### Main Lesson
+
+There is no single XSS payload that works everywhere.
+
+The correct payload depends on where the input appears in the page and how the browser interprets it.
+
