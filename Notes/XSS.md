@@ -484,3 +484,109 @@ There is no single XSS payload that works everywhere.
 
 The correct payload depends on where the input appears in the page and how the browser interprets it.
 
+### Lab 10: DOM XSS in `document.write` Sink Using Source `location.search` Inside a `select` Element
+
+This lab focused on DOM-based XSS inside a `select` element.
+
+The source was:
+
+```javascript
+location.search
+```
+
+The sink was:
+
+```javascript
+document.write()
+```
+
+The vulnerable value came from the `storeId` query parameter in the URL.
+
+The application used this value to create a new option in the stock checker dropdown list.
+
+A normal value such as:
+
+```text
+test123
+```
+
+appeared as an option inside the dropdown.
+
+Because the input was inside a `select` element, the payload first needed to break out of the dropdown before injecting executable HTML.
+
+The payload used was:
+
+```html
+"></select><img src=1 onerror=alert(1)>
+```
+
+The URL-encoded version was:
+
+```text
+%22%3E%3C%2Fselect%3E%3Cimg%20src%3D1%20onerror%3Dalert(1)%3E
+```
+
+The payload worked by closing the current context, closing the `select` element, and then injecting an image element with an invalid source.
+
+When the image failed to load, the `onerror` event executed:
+
+```javascript
+alert(1)
+```
+
+#### Key Takeaway
+
+DOM XSS payloads depend heavily on where the input appears in the DOM.
+
+When user-controlled input is written inside a `select` element, the attacker may need to break out of the select context before injecting executable HTML.
+
+Dangerous sinks such as `document.write()` should not be used with untrusted input.
+
+
+### Lab 11: DOM XSS in AngularJS Expression with Angle Brackets and Double Quotes HTML-Encoded
+
+This lab focused on DOM-based XSS through AngularJS expression injection.
+
+The application used AngularJS and included the `ng-app` directive.
+
+AngularJS can evaluate expressions written inside:
+
+```text
+{{ }}
+```
+
+For example:
+
+```javascript
+{{7*7}}
+```
+
+would be evaluated by AngularJS.
+
+In this lab, angle brackets and double quotes were HTML-encoded, so normal HTML injection was not the correct technique.
+
+Instead of using a payload such as:
+
+```html
+<script>alert(1)</script>
+```
+
+the successful payload used an AngularJS expression:
+
+```javascript
+{{$on.constructor('alert(1)')()}}
+```
+
+This payload executed JavaScript through AngularJS expression evaluation and triggered:
+
+```javascript
+alert(1)
+```
+
+#### Key Takeaway
+
+XSS payloads depend on the execution context.
+
+When input appears inside an AngularJS-controlled area, attackers may be able to use AngularJS expressions instead of HTML tags.
+
+Encoding `<` and `>` is not enough if user input can still be evaluated as an AngularJS expression.
