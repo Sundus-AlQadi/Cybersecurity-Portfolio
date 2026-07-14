@@ -1080,3 +1080,193 @@ to comment out the rest of the line.
 Escaping single quotes alone is not enough in a JavaScript string context.
 
 Backslashes must also be escaped correctly because they can change how the browser interprets quotes.
+
+### Lab 20: Stored XSS into `onclick` Event
+
+This lab focused on stored XSS inside an `onclick` event handler.
+
+The vulnerable input was the Website field in the comment form.
+
+The application stored the Website value and later inserted it into an `onclick` attribute connected to the comment author's name.
+
+The application protected some characters:
+
+```text
+< and > were HTML-encoded
+" was HTML-encoded
+' was escaped
+\ was escaped
+```
+
+The successful payload was:
+
+```text
+http://foo?&apos;-alert(1)-&apos;
+```
+
+The important part was:
+
+```html
+&apos;
+```
+
+This is an HTML entity that represents a single quote:
+
+```text
+'
+```
+
+After browser parsing, the payload was able to break out of the JavaScript string inside the `onclick` handler and execute:
+
+```javascript
+alert(1)
+```
+
+#### Encoding vs Escaping
+
+| Term     | Simple Meaning                                | Example            |
+| -------- | --------------------------------------------- | ------------------ |
+| Encoding | Converts dangerous characters into safe text  | `<` becomes `&lt;` |
+| Escaping | Adds a character to stop breaking code syntax | `'` becomes `\'`   |
+
+#### Key Takeaway
+
+XSS payloads depend on the exact context.
+
+In this lab, the context was not normal HTML and not a normal URL attribute.
+
+The input was inside a JavaScript event handler, so the successful bypass used `&apos;` to introduce a single quote after browser parsing.
+
+### Lab 21: Reflected XSS into a JavaScript Template Literal
+
+This lab focused on reflected XSS inside a JavaScript template literal.
+
+Template literals use backticks:
+
+```javascript id="0j2uin"
+`example text`
+```
+
+They can also evaluate expressions using:
+
+```javascript id="tgw75k"
+${}
+```
+
+The successful payload was:
+
+```javascript id="g37qam"
+${alert(1)}
+```
+
+The payload worked because the input was placed inside an existing template literal. JavaScript evaluated the expression inside `${}` and executed:
+
+```javascript id="e7t1kt"
+alert(1)
+```
+
+#### Key Takeaway
+
+In template literal contexts, the payload does not need to break out of the string.
+
+Using `${}` can execute JavaScript directly inside the template literal.
+
+### Lab 22: Exploiting XSS to Steal Cookies
+
+**Status:** Pending - Tool Limitation
+
+This lab focuses on using stored XSS to steal a victim user's session cookie.
+
+The idea is that a malicious script is stored inside a blog comment. When the simulated victim views the comment, the script runs in the victim's browser and sends `document.cookie` to an external interaction server.
+
+In the intended solution, Burp Collaborator is used to receive the victim's cookie.
+
+The general attack flow is:
+
+```text id="lab22-flow"
+1. Store an XSS payload in a blog comment.
+2. The victim views the comment.
+3. The script reads document.cookie.
+4. The script sends the cookie to Burp Collaborator.
+5. The attacker uses the captured session cookie to impersonate the victim.
+```
+
+This lab was not completed because it requires Burp Collaborator / Burp Suite Professional to receive the victim's cookie through an external interaction.
+
+#### Why This Lab Matters
+
+This lab shows the real impact of XSS beyond `alert(1)`.
+
+If session cookies are readable by JavaScript, stored XSS can allow an attacker to steal a victim's session and impersonate them.
+
+#### Key Takeaway
+
+XSS can lead to session hijacking if sensitive cookies are accessible through JavaScript.
+
+Cookies should be protected with security flags such as `HttpOnly` where possible, and the main priority is to prevent XSS in the first place.
+
+---
+
+### Lab 23: Exploiting XSS to Capture Passwords
+
+**Status:** Pending - Tool Limitation
+
+This lab focuses on using stored XSS to capture user credentials.
+
+The idea is to inject malicious HTML and JavaScript into a blog comment. When the victim views the comment, the injected content can create password-related fields or interact with the browser in a way that captures credentials and sends them to an external interaction server.
+
+In the intended solution, Burp Collaborator is used to receive the captured credentials.
+
+The general attack flow is:
+
+```text id="lab23-flow"
+1. Store an XSS payload in a blog comment.
+2. The victim views the comment.
+3. The payload creates or abuses input fields in the page.
+4. The victim's credentials are captured.
+5. The captured data is sent to Burp Collaborator.
+```
+
+This lab was not completed because it requires an external interaction server such as Burp Collaborator, which is not available in Burp Suite Community Edition.
+
+#### Why This Lab Matters
+
+This lab shows that XSS can be used for credential theft, not only cookie theft.
+
+A malicious script can modify the page, create fake inputs, or capture sensitive values entered by the user.
+
+#### Key Takeaway
+
+Stored XSS can be used to steal sensitive user information such as passwords if malicious JavaScript runs in the victim's browser.
+
+Strong output encoding, sanitization, and safe rendering are required to prevent this type of attack.
+
+---
+
+### Lab 24: Exploiting XSS to Bypass CSRF Defenses
+
+This lab showed how stored XSS can bypass CSRF protection.
+
+The email change function required a CSRF token, but the injected JavaScript could access the victim's account page because it ran in the victim's browser.
+
+The payload performed three actions:
+
+```text id="vij9pj"
+1. Load /my-account
+2. Extract the CSRF token
+3. Send a POST request to /my-account/change-email
+```
+
+The lab was solved immediately after posting the comment because the simulated victim automatically viewed the comment and triggered the stored XSS payload.
+
+#### Why Changing the Email Matters
+
+Changing the email proves that the attacker can perform an authenticated action as the victim.
+
+In real applications, changing the email can be serious because it may help with account takeover, especially if password reset links are sent to the email address.
+
+#### Key Takeaway
+
+CSRF tokens do not fully protect an application if XSS exists.
+
+With XSS, an attacker can read tokens from the page and submit valid requests from inside the victim's session.
