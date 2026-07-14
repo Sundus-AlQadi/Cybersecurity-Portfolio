@@ -41,6 +41,8 @@ Completed labs covered:
 * Data extraction using response behavior and timing
 * Filter bypass using XML encoding
 
+Note: Some out-of-band SQL Injection labs were reviewed and marked as pending because they require Burp Collaborator / Burp Suite Professional.
+
 #### Authentication Vulnerabilities
 
 Completed labs covered:
@@ -77,20 +79,36 @@ Completed labs covered:
 
 #### Cross-Site Scripting (XSS)
 
-Currently in progress.
+Completed core Practitioner-level XSS labs covering:
 
-Completed labs so far covered:
-
-* Reflected XSS in HTML context
-* Stored XSS in HTML context
+* Reflected XSS
+* Stored XSS
 * DOM-based XSS
-* `location.search` as a DOM XSS source
-* `document.write()` as a dangerous sink
-* `innerHTML` as a dangerous sink
-* HTML attribute breakout
-* JavaScript execution using event handlers
-* Basic XSS payload testing
-* Output encoding and sanitization concepts
+* Reflected DOM XSS
+* Stored DOM XSS
+* XSS in HTML context
+* XSS in HTML attribute context
+* XSS in JavaScript string context
+* XSS in JavaScript template literals
+* XSS in anchor `href` attributes
+* XSS in `onclick` event handlers
+* DOM sources such as `location.search` and `location.hash`
+* Dangerous DOM sinks such as `document.write()`, `innerHTML`, jQuery `.attr()`, and `eval()`
+* jQuery-based DOM XSS
+* AngularJS expression injection
+* SVG-based XSS
+* Custom tag injection
+* Canonical link tag injection
+* WAF and filter bypass techniques
+* Event handler payloads such as `onerror`, `onfocus`, `onresize`, `onbegin`, and `onclick`
+* XSS to bypass CSRF defenses
+
+Note: Two XSS impact labs were reviewed and marked as pending because they require Burp Collaborator / Burp Suite Professional:
+
+* Exploiting XSS to steal cookies
+* Exploiting XSS to capture passwords
+
+Expert-level XSS labs are deferred for future study.
 
 The PortSwigger lab documentation is available under:
 
@@ -154,14 +172,14 @@ Notes/
 * Completed Authentication Vulnerabilities labs and documentation
 * Completed Access Control Vulnerabilities labs and documentation
 * Completed SQL Injection labs and documentation
-* Started Cross-Site Scripting learning path
+* Completed core Cross-Site Scripting Practitioner labs and documentation
+* Marked tool-limited SQL Injection and XSS labs as pending due to Burp Collaborator requirements
+* Deferred Expert-level XSS labs for future study
 * Completed selected SEED Labs in controlled academic environments
-
-Note: Some out-of-band SQL Injection labs were reviewed and marked as pending due to Burp Collaborator tool requirements.
 
 ## Upcoming Work
 
-* Continue Cross-Site Scripting (XSS)
+* CSRF
 * File Upload Vulnerabilities
 * Business Logic Vulnerabilities
 * Server-Side Request Forgery (SSRF)
