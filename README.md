@@ -13,6 +13,7 @@ This portfolio documents my practical cybersecurity learning journey through con
 * Authentication Vulnerabilities
 * Access Control Vulnerabilities
 * Cross-Site Scripting (XSS)
+* Cross-Site Request Forgery (CSRF)
 * Network Security Fundamentals
 * Burp Suite
 * AI for Cybersecurity
@@ -110,6 +111,29 @@ Note: Two XSS impact labs were reviewed and marked as pending because they requi
 
 Expert-level XSS labs are deferred for future study.
 
+Cross-Site Request Forgery (CSRF)
+Completed available CSRF labs covered:
+
+CSRF vulnerability with no defenses
+CSRF token validation based on request method
+CSRF token validation based on token presence
+CSRF tokens not tied to user sessions
+CSRF tokens tied to non-session cookies
+Double submit cookie weaknesses
+Cookie injection using Set-Cookie
+SameSite Lax bypass using method override
+SameSite Strict bypass using client-side redirects
+SameSite Lax bypass using cookie refresh
+OAuth login flow and session cookie refresh behavior
+Referer validation bypass when the header is missing
+Broken Referer validation using weak string matching
+Referrer-Policy behavior
+CSRF exploit construction using auto-submitting forms and Exploit Server
+
+Note: One CSRF lab was reviewed and marked as pending because it requires Burp Collaborator / Burp Suite Professional:
+
+SameSite Strict bypass via sibling domain
+
 The PortSwigger lab documentation is available under:
 
 ```text
@@ -173,13 +197,14 @@ Notes/
 * Completed Access Control Vulnerabilities labs and documentation
 * Completed SQL Injection labs and documentation
 * Completed core Cross-Site Scripting Practitioner labs and documentation
+* Completed Cross-Site Request Forgery (CSRF) labs and documentation
+* Marked one tool-limited CSRF lab as pending due to Burp Collaborator requirements
 * Marked tool-limited SQL Injection and XSS labs as pending due to Burp Collaborator requirements
 * Deferred Expert-level XSS labs for future study
 * Completed selected SEED Labs in controlled academic environments
 
 ## Upcoming Work
 
-* CSRF
 * File Upload Vulnerabilities
 * Business Logic Vulnerabilities
 * Server-Side Request Forgery (SSRF)
