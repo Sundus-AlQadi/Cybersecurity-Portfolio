@@ -72,9 +72,3 @@ After completing this module, I can:
 ## Module Reward
 
 I completed all three rooms and unlocked the **Mystery Chest** reward.
-
-## Ethical Notice
-
-All practical activities were completed in TryHackMe's authorized learning
-environment. This documentation does not include answers, flags, or restricted
-room content.
