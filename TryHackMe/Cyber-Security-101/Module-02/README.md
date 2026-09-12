@@ -3,7 +3,7 @@
 **Platform:** TryHackMe  
 **Learning Path:** Cyber Security 101  
 **Module Status:** Partially Completed  
-**Completed Room:** Linux Fundamentals Part 1 ✅
+**Completed Room:** Linux Fundamentals Part 1 
 
 ## Completed Room
 
@@ -51,8 +51,3 @@ After completing this room, I can:
 
 - Linux Fundamentals Part 2 — Requires Premium
 - Linux Fundamentals Part 3 — Requires Premium
-
-## Ethical Notice
-
-All practical activities were completed in TryHackMe's authorized learning
-environment. This documentation does not include answers or flags.
